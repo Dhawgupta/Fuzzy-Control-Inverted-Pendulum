@@ -1,16 +1,16 @@
 import pygame, sys
 from pygame.locals import *
 from math import sin, cos, radians
-from backend import compute_current
+from fuzzification import compute_current
 
 pygame.init()
 
 WINDOWSIZE = 800
-TIMETICK = 1
+TIMETICK = 20
 BOBSIZE = 15
 epsilon_theta = [3, 2, 5]
 epsilon_omega = [2, 2, 4]
-epsilon_curr = [1, 2, 4, 3, 5, 6]
+epsilon_curr = [2, 4, 8, 6, 10, 12]
 
 window = pygame.display.set_mode((WINDOWSIZE, WINDOWSIZE))
 pygame.display.set_caption("Inverted Pendulum Fuzzy Logic")
@@ -25,8 +25,8 @@ SWINGLENGTH = 320
 class BobMass(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.theta = 1
-        self.dtheta = -2.5
+        self.theta = -1
+        self.dtheta = 1
         # Rect(left, top, width, height)
         self.rect = pygame.Rect(int(PIVOT[0] - SWINGLENGTH * cos(self.theta)),
                                 int(PIVOT[1] - SWINGLENGTH * sin(self.theta)),
@@ -37,11 +37,10 @@ class BobMass(pygame.sprite.Sprite):
 
         current = compute_current(
             self.theta, self.dtheta, epsilon_theta, epsilon_omega, epsilon_curr)
-        t = TIMETICK/1000
-        theta_new = self.theta + self.dtheta*t + current *(t**2)*0.5
-        omega_new = self.dtheta + current*t
+        theta_new = self.theta + self.dtheta / 10 + current / 200
+        omega_new = self.dtheta + current / 10
         self.theta, self.dtheta = theta_new, omega_new
-        print(theta_new, omega_new, current)
+        print(theta_new, omega_new)
 
         # Rect(left, top, width, height)
         self.rect = pygame.Rect(PIVOT[0] -

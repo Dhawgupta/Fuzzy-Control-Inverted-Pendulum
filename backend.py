@@ -1,6 +1,5 @@
 import time
-import matplotlib.pyplot as plt
-import numpy as np
+
 
 def profile(epsilon1, epsilon2, epsilon3, x):
     y = -1
@@ -18,22 +17,22 @@ def fuzzication(epsilon: 'array', x):
     epsilon1 = -1 * epsilon[0]
     epsilon2 = 0
     epsilon3 = 0
-    y_zero = profile(epsilon1, epsilon2, epsilon3, x) # profile for the zero thing
+    y_zero = profile(epsilon1, epsilon2, epsilon3, x)
 
     epsilon1 = 0
     epsilon2 = epsilon[1]
     epsilon3 = epsilon[2]
-    y_small_pos = profile(epsilon1, epsilon2, epsilon3, x) # profile for the small + ve thing
+    y_small_pos = profile(epsilon1, epsilon2, epsilon3, x)
 
     epsilon1 = -1 * (epsilon[1] + epsilon[2])
     epsilon2 = -1 * epsilon[2]
     epsilon3 = -1 * (epsilon[1])
-    y_small_neg = profile(epsilon1, epsilon2, epsilon3, x) # profile for the small -ve thing
+    y_small_neg = profile(epsilon1, epsilon2, epsilon3, x)
 
     return y_small_neg, y_zero, y_small_pos
 
 
-def rules(theta, omega, epsilon_theta: 'array', epsilon_omega: 'array'): # don't know what they do byt probably responsbile for the current rules
+def rules(theta, omega, epsilon_theta: 'array', epsilon_omega: 'array'):
     y_theta = fuzzication(epsilon_theta, theta)
     y_omega = fuzzication(epsilon_omega, omega)
 
@@ -88,44 +87,7 @@ def main():
     epsilon_curr = [2, 4, 8, 6, 10, 12]
     theta = 1
     omega = 1
-    # we will plot the profiles
-    plt.figure()
-    x = np.linspace(-8,8,1000)
-    y_zero = []
-    y_small_pos = []
-    y_small_neg = []
-    # y_small_neg, y_zero, y_small_pos
-    for x_ in x:
-        a,b,c = fuzzication(epsilon_theta,x_)
-        y_small_neg.append(a)
-        y_zero.append(b)
-        y_small_pos.append(c)
-    # plt.subplot(2,1,1)
-    plt.title('Theta profile')
-    plt.plot(x,y_small_neg,'c')
-    plt.plot(x,y_zero, 'g')
-    plt.plot(x,y_small_pos, 'y')
-    plt.ylim(0,1.5)
-    plt.show()
 
-    plt.figure()
-    # plt.subplot(2,1,2)
-    y_zero = []
-    y_small_pos = []
-    y_small_neg = []
-    # y_small_neg, y_zero, y_small_pos
-    for x_ in x:
-        a,b,c = fuzzication(epsilon_omega,x_)
-        y_small_neg.append(a)
-        y_zero.append(b)
-        y_small_pos.append(c)
-    plt.title('Omega profile')
-    plt.plot(x,y_small_neg,'c')
-    plt.plot(x,y_zero, 'g')
-    plt.plot(x,y_small_pos, 'y')
-    plt.ylim(0,1.5)
-
-    plt.show()
     current = compute_current(
         theta, omega, epsilon_theta, epsilon_omega, epsilon_curr)
     print(current)
